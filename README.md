@@ -203,8 +203,8 @@ Physical AI: Space, time, fundamental physics understanding and embodied reasoni
 
 ### Release Date:
 
-* Github: [12/11/2025](https://github.com/nvidia-cosmos/cosmos-reason)
-* Huggingface: [12/11/2025](https://huggingface.co/nvidia/Cosmos-Reason2-2B).
+* Github: [12/18/2025](https://github.com/nvidia-cosmos/cosmos-reason)
+* Huggingface: [12/18/2025](https://huggingface.co/nvidia/Cosmos-Reason2-2B).
 
 ## Model Architecture:
 
@@ -277,6 +277,8 @@ See [Cosmos-Reason2](https://github.com/nvidia-cosmos/cosmos-reason2) for detail
 
 ## Training and Evaluation Sections:
 
+Cosmos-Reason2-8B model was trained and evaluated on the same datasets used for [Cosmos-Reason1-7B](https://huggingface.co/nvidia/Cosmos-Reason1-7B#training-datasets), in addition to the following newly added datasets.
+
 ## Training Datasets:
 
 **Data Collection Method**:
@@ -287,8 +289,6 @@ See [Cosmos-Reason2](https://github.com/nvidia-cosmos/cosmos-reason2) for detail
 * IntPhys: Hybrid:  Automatic/Sensors
 * InfLevel: Hybrid:  Automatic/Sensors
 * CLEVRER: Hybrid:  Automatic/Sensors
-* STAR: Hybrid:  Automatic/Sensors
-* MolmoAct: Hybrid:  Automatic/Sensors
 
 **Labeling Method**:
 
@@ -298,8 +298,6 @@ See [Cosmos-Reason2](https://github.com/nvidia-cosmos/cosmos-reason2) for detail
 * IntPhys: Hybrid:  Hybrid:  Human,Automated
 * InfLevel: Hybrid:  Hybrid:  Human,Automated
 * CLEVRER: Hybrid:  Hybrid:  Human,Automated
-* STAR: Hybrid:  Hybrid:  Human,Automated
-* MolmoAct: Hybrid:  Hybrid:  Human,Automated
 
 The combined datasets span multimodal video, sensor signals, and structured physical-reasoning tasks, providing broad coverage for training world-model reasoning capabilities.
 
@@ -313,8 +311,6 @@ The combined datasets span multimodal video, sensor signals, and structured phys
 * IntPhys: Hybrid:  Automatic/Sensors
 * InfLevel: Hybrid:  Automatic/Sensors
 * CLEVRER: Hybrid:  Automatic/Sensors
-* STAR: Hybrid:  Automatic/Sensors
-* MolmoAct: Hybrid:  Automatic/Sensors
 
 **Labeling Method**:
 
@@ -324,8 +320,6 @@ The combined datasets span multimodal video, sensor signals, and structured phys
 * IntPhys: Hybrid:  Hybrid:  Human,Automated
 * InfLevel: Hybrid:  Hybrid:  Human,Automated
 * CLEVRER: Hybrid:  Hybrid:  Human,Automated
-* STAR: Hybrid:  Hybrid:  Human,Automated
-* MolmoAct: Hybrid:  Hybrid:  Human,Automated
 
 The combined datasets span multimodal video, sensor signals, and structured physical-reasoning tasks, providing broad coverage for training world-model reasoning capabilities.
 
@@ -335,7 +329,7 @@ Modality: Video (mp4) and Text
 
 ## Inference:
 
-**Test Hardware:** H100, A100, B200 `<br>`
+**Test Hardware:** H100, A100
 
 > [!NOTE]
 > We suggest using `fps=4` for the input video and `max_tokens=4096` to avoid truncated response.
@@ -344,7 +338,7 @@ Modality: Video (mp4) and Text
 import transformers
 import torch
 
-model_name = "nvidia/Cosmos-Reason2-8B"
+model_name = "nvidia/Cosmos-Reason2-2B"
 model = transformers.Qwen3VLForConditionalGeneration.from_pretrained(
     model_name, dtype=torch.float16, device_map="auto", attn_implementation="sdpa"
 )
@@ -393,19 +387,18 @@ output_text = processor.batch_decode(
     skip_special_tokens=True,
     clean_up_tokenization_spaces=False,
 )
+
 ```
 
 #### System Requirements and Performance
 
-This model requires a minimum of 32GB of GPU VRAM. The following table shows inference time for a single generation across different NVIDIA GPU hardware.
-
-Coming Soon!
+This model requires a minimum of 32 GB of GPU memory. Inference latency for a single generation across different NVIDIA GPU platforms will be published shortly.
 
 #### Quality Benchmarks
 
 For comparative evaluation, we present benchmark scores using the [Physical AI Bench Leaderboard](https://huggingface.co/spaces/shi-labs/physical-ai-bench-leaderboard).
 
-![alt text](cosmos_cr2_8b_paiBench.png)
+![PAI Bench Leaderboard](cosmos_cr2_8b_paiBench.png)
 
 ## Ethical Considerations
 
@@ -431,10 +424,10 @@ We value you, the datasets, the diversity they represent, and what we have been 
 
 ### Bias
 
-| Field                                                                                                                                                         | Response                                                                                                                                                                                                                                                                                                                                                     |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Participation considerations from adversely impacted groups[protected classes](https://www.senate.ca.gov/content/protected-classes) in model design and testing: | None                                                                                                                                                                                                                                                                                                                                                         |
-| Measures taken to mitigate against unwanted bias:                                                                                                             | The training video sources contain multiple physical embodiments and environments including human, car, single arm robot, bimanual robot in indoor and outdoor environments. By training on numerous and various physical interactions and curated datasets, we strive to provide a model that mitigates biases towards certain embodiments or environments. |
+| Field                                                                                                                                                           | Response                                                                                                                                                                                                                                                                                                                                                     |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Participation considerations from adversely impacted groups [protected classes](https://www.senate.ca.gov/content/protected-classes) in model design and testing: | None                                                                                                                                                                                                                                                                                                                                                         |
+| Measures taken to mitigate against unwanted bias:                                                                                                               | The training video sources contain multiple physical embodiments and environments including human, car, single arm robot, bimanual robot in indoor and outdoor environments. By training on numerous and various physical interactions and curated datasets, we strive to provide a model that mitigates biases towards certain embodiments or environments. |
 
 ### Explainability
 
@@ -447,7 +440,7 @@ We value you, the datasets, the diversity they represent, and what we have been 
 | Describe how the model works:                             | Given a video/image and a text prompt, the model first converts the video/image into tokens using a vision encoder and a special translator called a projector. These video tokens are combined with the text prompt and fed into the core model, which uses a mix of LLM modules and techniques. This enables the model to think step-by-step and provide detailed, logical responses. |
 | Technical Limitations:                                    | The model may not follow the video or text input accurately in challenging cases, where the input video shows complex scene composition and temporal dynamics. Examples of challenging scenes include: fast camera movements, overlapping human-object interactions, low lighting with high motion blur, and multiple people performing different actions simultaneously.               |
 | Verified to have met prescribed NVIDIA quality standards: | Yes                                                                                                                                                                                                                                                                                                                                                                                     |
-| Performance Metrics:                                      | Quantitative and Qualitative Evaluation. Cosmos-Reason2 proposes the embodied reasoning benchmark and physical common sense benchmark to evaluate accuracy with visual question answering.                                                                                                                                                                                             |
+| Performance Metrics:                                      | Quantitative and Qualitative Evaluation. Cosmos-Reason2 proposes the embodied reasoning benchmark and physical common sense benchmark to evaluate accuracy with visual question answering.                                                                                                                                                                                             |
 | Potential Known Risks:                                    | The model's output can generate all forms of texts, including what may be considered toxic, offensive, or indecent.                                                                                                                                                                                                                                                                     |
 | Licensing:                                                | [NVIDIA Open Model License](https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license). Additional Information: [Apache License 2.0](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/apache-2.0.md).                                                                                                                                   |
 
@@ -455,7 +448,7 @@ We value you, the datasets, the diversity they represent, and what we have been 
 
 | Field                                                               | Response                                                                       |
 | :------------------------------------------------------------------ | :----------------------------------------------------------------------------- |
-| Generatable or reverse engineerable personal data?                  | None Known                                                                     |
+| Generatable or reverse engineerable personal data?                  | No                                                                             |
 | Personal data used to create this model?                            | None Known                                                                     |
 | Was consent obtained for any personal data used?                    | None Known                                                                     |
 | How often is dataset reviewed?                                      | Before Release                                                                 |
