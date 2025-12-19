@@ -140,7 +140,7 @@ extra_gated_description: >-
   Policy](https://www.nvidia.com/en-us/about-nvidia/privacy-policy/).
 extra_gated_button_content: Submit
 base_model:
-- Qwen/Qwen3-VL-2B-Instruct
+- Qwen/Qwen3-VL-8B-Instruct
 pipeline_tag: image-text-to-text
 ---
 
@@ -203,8 +203,8 @@ Physical AI: Space, time, fundamental physics understanding and embodied reasoni
 
 ### Release Date:
 
-* Github: [12/18/2025](https://github.com/nvidia-cosmos/cosmos-reason)
-* Huggingface: [12/18/2025](https://huggingface.co/nvidia/Cosmos-Reason2-2B).
+* Github: [12/19/2025](https://github.com/nvidia-cosmos/cosmos-reason2)
+* Huggingface: [12/19/2025](https://huggingface.co/nvidia/Cosmos-Reason2-8B).
 
 ## Model Architecture:
 
