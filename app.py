@@ -98,13 +98,27 @@ def analyze_content(
         
         progress(0.3, desc="Processing input...")
         
+        def _coerce_input_to_path(x):
+            """Gradio can return a str path or a dict like {'path': ..., 'url': ...}."""
+            if x is None:
+                return None
+            if isinstance(x, str):
+                return x
+            if isinstance(x, dict):
+                # gr.Video / gr.Image can return dicts depending on version/config
+                return x.get("path") or x.get("name") or x.get("file") or x.get("url")
+            return x
+
         # Get file path
         if video_file:
-            file_path = video_file
+            file_path = _coerce_input_to_path(video_file)
             input_type = "video"
         else:
-            file_path = image_file
+            file_path = _coerce_input_to_path(image_file)
             input_type = "image"
+
+        if not file_path:
+            return "", "⚠️ Could not read uploaded file path. Please re-upload and try again."
         
         progress(0.5, desc="Running inference...")
         
@@ -234,6 +248,7 @@ def create_ui():
                         video_input = gr.Video(
                             label="Upload Video",
                             sources=["upload"],
+                            type="filepath",
                         )
                     
                     with gr.TabItem("🖼️ Image"):

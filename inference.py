@@ -22,7 +22,7 @@ class CosmosReason2:
     
     def __init__(
         self,
-        model_path: str = None,
+        model_path: Optional[str] = None,
         device_map: str = "auto",
         torch_dtype: torch.dtype = torch.bfloat16,
         attn_implementation: str = "sdpa",
@@ -103,12 +103,18 @@ class CosmosReason2:
         
         # Build user content
         user_content = []
+
+        def _normalize_media_uri(p: str) -> str:
+            """Accept local paths, file:// URIs, and http(s) URLs."""
+            if p.startswith("file://"):
+                return p
+            if p.startswith("http://") or p.startswith("https://"):
+                return p
+            return f"file://{os.path.abspath(p)}"
         
         # Add video if provided
         if video_path:
-            # Handle file:// prefix
-            if not video_path.startswith("file://"):
-                video_path = f"file://{os.path.abspath(video_path)}"
+            video_path = _normalize_media_uri(video_path)
             
             user_content.append({
                 "type": "video",
@@ -118,8 +124,7 @@ class CosmosReason2:
         
         # Add image if provided
         if image_path:
-            if not image_path.startswith("file://"):
-                image_path = f"file://{os.path.abspath(image_path)}"
+            image_path = _normalize_media_uri(image_path)
             
             user_content.append({
                 "type": "image",
@@ -278,7 +283,7 @@ class CosmosReason2:
 
 
 def load_model(
-    model_path: str = None,
+    model_path: Optional[str] = None,
     **kwargs
 ) -> CosmosReason2:
     """
