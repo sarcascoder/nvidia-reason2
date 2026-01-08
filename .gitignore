@@ -1,0 +1,51 @@
+# Model weights (large files)
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+
+# Hugging Face cache
+.cache/
+__pycache__/
+*.pyc
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+
+# Lock files
+lock.lock
+*.lock
+
+# Environment
+.env
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Uploaded files (temporary)
+uploads/
+temp_videos/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model index file (will be downloaded with weights)
+model.safetensors.index.json
+
+# Large vocab files if needed
+# vocab.json
+# merges.txt
+# tokenizer.json

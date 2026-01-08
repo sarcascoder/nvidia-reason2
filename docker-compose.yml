@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  cosmos-reason2:
+    build: .
+    container_name: cosmos-reason2-8b
+    
+    # GPU support
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    
+    # Port mapping
+    ports:
+      - "7860:7860"
+    
+    # Environment variables
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+      - MODEL_PATH=/app
+      - CUDA_VISIBLE_DEVICES=0
+    
+    # Volume for persistent storage (optional)
+    volumes:
+      - ./uploads:/app/uploads
+      - huggingface_cache:/app/.cache/huggingface
+    
+    # Shared memory for PyTorch
+    shm_size: '16gb'
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+volumes:
+  huggingface_cache:
