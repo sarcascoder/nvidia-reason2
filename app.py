@@ -111,6 +111,12 @@ def analyze_content(
                 return None
             if isinstance(x, str):
                 return x
+            # Gradio 6 can pass FileData-like objects
+            if hasattr(x, "path"):
+                try:
+                    return getattr(x, "path")
+                except Exception:
+                    pass
             if isinstance(x, dict):
                 # gr.Video / gr.Image can return dicts depending on version/config
                 return x.get("path") or x.get("name") or x.get("file") or x.get("url")

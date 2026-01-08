@@ -105,12 +105,19 @@ class CosmosReason2:
         user_content = []
 
         def _normalize_media_uri(p: str) -> str:
-            """Accept local paths, file:// URIs, and http(s) URLs."""
-            if p.startswith("file://"):
-                return p
+            """Accept local paths, file:// URIs, and http(s) URLs.
+
+            Important: Transformers' video loader accepts either a URL or a *local path*.
+            Some backends treat "file://..." as an iterable/URL-like string and end up
+            in a recursion path. To be maximally compatible, we pass local paths as
+            plain filesystem paths by default.
+            """
             if p.startswith("http://") or p.startswith("https://"):
                 return p
-            return f"file://{os.path.abspath(p)}"
+            if p.startswith("file://"):
+                # Convert file:// URIs back to local paths
+                return p[len("file://"):]
+            return os.path.abspath(p)
         
         # Add video if provided
         if video_path:
