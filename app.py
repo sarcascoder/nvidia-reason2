@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
-Gradio UI for Cosmos-Reason2-8B model.
-Provides a web interface for video/image analysis with predefined roles.
+"""Goldsmith's Eye
+
+Gradio UI for video/image inspection with predefined roles.
 """
 
 import os
@@ -235,14 +235,14 @@ def create_ui():
     """Create the Gradio UI."""
     
     # Gradio 6.0 moved theme/css from Blocks() to launch(). Keep Blocks() minimal for compatibility.
-    with gr.Blocks(title="Cosmos-Reason2-8B") as demo:
+    with gr.Blocks(title="Goldsmith's Eye") as demo:
         
         gr.Markdown(
             """
-            # 🌌 Cosmos-Reason2-8B
-            ### NVIDIA's Physical AI Reasoning Model
+            # Goldsmith's Eye
+            ### Video & Image Inspection Assistant
             
-            Upload a video or image and ask questions. The model will analyze the content and provide detailed reasoning.
+            Upload a video or image and ask questions. You'll get a detailed, structured analysis.
             
             **Features:**
             - 🎬 Video understanding with temporal reasoning
@@ -385,10 +385,8 @@ def create_ui():
         gr.Markdown(
             """
             ---
-            **Note:** This model requires significant GPU memory (~32GB). 
+            **Performance note:** This app requires significant GPU memory. 
             For best results, use FPS=4 for videos.
-            
-            Built with NVIDIA Cosmos-Reason2-8B | [Model Card](https://huggingface.co/nvidia/Cosmos-Reason2-8B)
             """
         )
         
@@ -461,7 +459,7 @@ def main():
     """Launch the Gradio app."""
     import argparse
     
-    parser = argparse.ArgumentParser(description="Launch Cosmos-Reason2-8B UI")
+    parser = argparse.ArgumentParser(description="Launch Goldsmith's Eye UI")
     parser.add_argument("--host", type=str, default="0.0.0.0", help="Host to bind to")
     parser.add_argument("--port", type=int, default=7860, help="Port to bind to")
     parser.add_argument("--share", action="store_true", help="Create public link")
