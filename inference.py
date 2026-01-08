@@ -11,6 +11,30 @@ from pathlib import Path
 from typing import Optional, Union, List, Dict, Any
 import logging
 
+# -----------------------------------------------------------------------------
+# Compatibility shim
+# Some environments ship an older or patched PyTorch build where
+# `torch.compiler.is_compiling` is missing, but recent Transformers versions
+# reference it in fast image/video processing paths.
+# -----------------------------------------------------------------------------
+try:
+    if not hasattr(torch, "compiler"):
+        class _TorchCompilerShim:  # pragma: no cover
+            @staticmethod
+            def is_compiling() -> bool:
+                return False
+
+        torch.compiler = _TorchCompilerShim()  # type: ignore[attr-defined]
+    elif not hasattr(torch.compiler, "is_compiling"):
+        def _is_compiling() -> bool:  # pragma: no cover
+            return False
+
+        torch.compiler.is_compiling = _is_compiling  # type: ignore[attr-defined]
+except Exception:
+    # If anything goes wrong, we fail open; worst case Transformers will error
+    # and we'll handle it elsewhere.
+    pass
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

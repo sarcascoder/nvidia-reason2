@@ -1,4 +1,6 @@
 # Core dependencies
+# NOTE: Transformers' Qwen3-VL fast processors expect torch.compiler.is_compiling
+# which is present in PyTorch 2.1+.
 torch>=2.1.0
 transformers>=4.45.0
 accelerate>=0.25.0
