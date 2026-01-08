@@ -99,7 +99,14 @@ def analyze_content(
         progress(0.3, desc="Processing input...")
         
         def _coerce_input_to_path(x):
-            """Gradio can return a str path or a dict like {'path': ..., 'url': ...}."""
+            """Coerce Gradio media payloads into a path/URL string.
+
+            Observed return formats across Gradio versions:
+            - str: "/tmp/gradio/.../video.mp4"
+            - dict: {"path": ..., "url": ...}
+            - tuple/list: (path, ) or (path, mime)
+            - None
+            """
             if x is None:
                 return None
             if isinstance(x, str):
@@ -107,6 +114,11 @@ def analyze_content(
             if isinstance(x, dict):
                 # gr.Video / gr.Image can return dicts depending on version/config
                 return x.get("path") or x.get("name") or x.get("file") or x.get("url")
+            if isinstance(x, (list, tuple)):
+                if len(x) == 0:
+                    return None
+                # Prefer first element if it is a string or dict
+                return _coerce_input_to_path(x[0])
             return x
 
         # Get file path
@@ -216,11 +228,8 @@ custom_css = """
 def create_ui():
     """Create the Gradio UI."""
     
-    with gr.Blocks(
-        title="Cosmos-Reason2-8B",
-        theme=gr.themes.Soft(),
-        css=custom_css
-    ) as demo:
+    # Gradio 6.0 moved theme/css from Blocks() to launch(). Keep Blocks() minimal for compatibility.
+    with gr.Blocks(title="Cosmos-Reason2-8B") as demo:
         
         gr.Markdown(
             """
@@ -248,7 +257,6 @@ def create_ui():
                         video_input = gr.Video(
                             label="Upload Video",
                             sources=["upload"],
-                            type="filepath",
                         )
                     
                     with gr.TabItem("🖼️ Image"):
@@ -463,6 +471,8 @@ def main():
         server_name=args.host,
         server_port=args.port,
         share=args.share,
+        theme=gr.themes.Soft(),
+        css=custom_css,
     )
 
 
